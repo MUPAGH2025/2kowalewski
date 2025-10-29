@@ -3,5 +3,5 @@ on: push
 jobs:
   pdf:
     runs-on: ubuntu-22.04
-      steps:
+    steps:
       - run: sudo apt-get install texlive-xetex

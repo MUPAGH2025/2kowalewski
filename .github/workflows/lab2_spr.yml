@@ -4,10 +4,10 @@ jobs:
   pdf:
     runs-on: ubuntu-22.04
     steps:
-      - run: sudo apt-get install texlive-xetex pandoc inkscape
+     # - run: sudo apt-get install texlive-xetex pandoc inkscape
       - run: pip install collections.abc open_atmos_jupyter_utils matplotlib nbconvert ipykernel
       - uses: actions/checkout@v4
-      - run: python -m nbconvert --to pdf --execute mpdata_2d_numpy_only_Kowalewski.ipynb
+      - run: python -m nbconvert --to script --execute mpdata_2d_numpy_only_Kowalewski.ipynb
       - uses: actions/upload-artifact@v4
         with:
-          path: mpdata_2d_numpy_only_Kowalewski.pdf
+          path: anim.gif

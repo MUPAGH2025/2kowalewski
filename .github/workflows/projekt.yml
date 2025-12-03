@@ -38,19 +38,28 @@ jobs:
 
       - name: Execute notebook and export to PDF
         run: |
-          # jeśli notebook jest w podkatalogu, dodaj tu "cd NAZWA_KATALOGU"
+          # Uruchom nbconvert; jeżeli xelatex zwróci błąd, NIE zabijaj joba
           jupyter nbconvert \
             --to pdf \
             --execute projekt_shallow_water.ipynb \
-            --output projekt_shallow_water.pdf
+            || echo "nbconvert/xelatex zwrócił błąd, ale spróbujemy wziąć notebook.pdf"
+          echo "Pliki po nbconvert:"
+          ls -la
 
       - name: Collect report artifacts (GIF + PDF)
         run: |
           mkdir -p artifacts
-          # wszystkie GIF-y wygenerowane przez notebook (w bieżącym katalogu)
+          # PDF generowany przez nbconvert nazywa się notebook.pdf
+          if [ -f notebook.pdf ]; then
+            cp notebook.pdf artifacts/projekt_shallow_water.pdf
+          elif [ -f projekt_shallow_water.pdf ]; then
+            cp projekt_shallow_water.pdf artifacts/
+          else
+            echo "Nie znaleziono PDF-a" >&2
+            exit 1
+          fi
+          # wszystkie GIF-y wygenerowane przez notebook
           cp ./*.gif artifacts/ 2>/dev/null || true
-          # główny raport PDF
-          cp projekt_shallow_water.pdf artifacts/
           echo "Zebrane pliki w artifacts/:"
           ls -la artifacts
 
@@ -60,4 +69,3 @@ jobs:
           name: projekt-shallow-water
           path: artifacts
           if-no-files-found: error
-

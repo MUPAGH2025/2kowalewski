@@ -30,14 +30,16 @@ jobs:
             ipykernel \
             nbconvert \
             jupyter
-            sudo apt-get update
-            sudo apt-get install -y texlive-xetex inkscape pandoc
+          sudo apt-get update
+          sudo apt-get install -y texlive-xetex inkscape pandoc
 
       - name: Run code and make pdf
         run: |
           jupyter nbconvert \
             --to pdf \
             --execute projekt_shallow_water.ipynb \
+            --no-input \
+            --no-prompt \
             --output projekt_shallow_water.pdf
 
       - name: Collect artifact
@@ -52,4 +54,3 @@ jobs:
           name: projekt-shallow-water
           path: artifacts
           if-no-files-found: error
-

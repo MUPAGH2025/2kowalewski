@@ -1,4 +1,4 @@
-name: Projekt Shallow Water
+name: projekt_shallow_water
 
 on:
   push:

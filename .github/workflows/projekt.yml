@@ -38,8 +38,6 @@ jobs:
           jupyter nbconvert \
             --to pdf \
             --execute projekt_shallow_water.ipynb \
-            --no-input \
-            --no-prompt \
             --output projekt_shallow_water.pdf
 
       - name: Collect artifact

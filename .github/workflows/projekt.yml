@@ -1,1 +1,63 @@
+name: Projekt Shallow Water
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install \
+            numpy \
+            matplotlib \
+            PyMPDATA \
+            open_atmos_jupyter_utils \
+            ipykernel \
+            nbconvert \
+            jupyter
+
+      - name: Install system packages (LaTeX, Inkscape, Pandoc)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-xetex inkscape pandoc
+
+      - name: Execute notebook and export to PDF
+        run: |
+          # jeśli notebook jest w podkatalogu, dodaj tu "cd NAZWA_KATALOGU"
+          jupyter nbconvert \
+            --to pdf \
+            --execute projekt_shallow_water.ipynb \
+            --output projekt_shallow_water.pdf
+
+      - name: Collect report artifacts (GIF + PDF)
+        run: |
+          mkdir -p artifacts
+          # wszystkie GIF-y wygenerowane przez notebook (w bieżącym katalogu)
+          cp ./*.gif artifacts/ 2>/dev/null || true
+          # główny raport PDF
+          cp projekt_shallow_water.pdf artifacts/
+          echo "Zebrane pliki w artifacts/:"
+          ls -la artifacts
+
+      - name: Upload report artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: projekt-shallow-water
+          path: artifacts
+          if-no-files-found: error
 
